@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://example.com/catalog"
+           targetNamespace="http://example.com/catalog"
+           elementFormDefault="qualified">
+
+    <!-- ===== Shared types ===== -->
+
+    <!-- A reusable "shape" for a product -->
+    <xs:complexType name="product">
+        <xs:sequence>
+            <xs:element name="sku" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="category" type="tns:category"/>
+            <xs:element name="price" type="xs:decimal"/>
+            <xs:element name="stock" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Category is limited to these 4 values -->
+    <xs:simpleType name="category">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="WINE"/>
+            <xs:enumeration value="BEER"/>
+            <xs:enumeration value="SPIRITS"/>
+            <xs:enumeration value="NON_ALCOHOLIC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ===== Operation 1: getProduct ===== -->
+    <xs:element name="getProductRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sku" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getProductResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="product" type="tns:product"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ===== Operation 2: listProducts (category is optional) ===== -->
+    <xs:element name="listProductsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="category" type="tns:category" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="listProductsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="count" type="xs:int"/>
+                <xs:element name="product" type="tns:product" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ===== Operation 3: addProduct (server creates the SKU) ===== -->
+    <xs:element name="addProductRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="category" type="tns:category"/>
+                <xs:element name="price" type="xs:decimal"/>
+                <xs:element name="stock" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addProductResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="product" type="tns:product"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ===== Operation 4: updatePrice ===== -->
+    <xs:element name="updatePriceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sku" type="xs:string"/>
+                <xs:element name="newPrice" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updatePriceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sku" type="xs:string"/>
+                <xs:element name="oldPrice" type="xs:decimal"/>
+                <xs:element name="newPrice" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
