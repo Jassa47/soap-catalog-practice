@@ -34,12 +34,28 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webservices</artifactId>
 		</dependency>
+		
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webservices-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Lets Spring generate a WSDL from our XSD (used in Step 4) -->
+       <dependency>
+           <groupId>wsdl4j</groupId>
+           <artifactId>wsdl4j</artifactId>
+       </dependency>
+       
+       <!-- JAXB: converts between XML and Java objects -->
+       <dependency>
+           <groupId>jakarta.xml.bind</groupId>
+           <artifactId>jakarta.xml.bind-api</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.glassfish.jaxb</groupId>
+           <artifactId>jaxb-runtime</artifactId>
+       </dependency>
 	</dependencies>
 
 	<build>
@@ -48,6 +64,26 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- Reads catalog.xsd and generates Java classes at build time -->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxb2-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+                <execution>
+                    <id>xjc</id>
+                    <goals>
+                        <goal>xjc</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <sources>
+                    <source>${project.basedir}/src/main/resources/xsd/catalog.xsd</source>
+                </sources>
+                <packageName>com.example.SOAPtutorial.gen</packageName>
+            </configuration>
+        </plugin>
 		</plugins>
 	</build>
 
